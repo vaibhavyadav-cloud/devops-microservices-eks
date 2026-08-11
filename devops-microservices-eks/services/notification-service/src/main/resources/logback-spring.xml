@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Structured JSON logging, matching the pattern used in the Auth (Node.js)
+    service. Every log line comes out as one JSON object — this is what
+    lets a K8s log pipeline (Fluent Bit / CloudWatch / Loki, etc.) parse
+    fields like "level" and "message" instead of scraping plain text.
+-->
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <!-- Keep the JSON flat and predictable: timestamp, level, logger,
+                 message, plus any key=value fields added via MDC. -->
+            <fieldNames>
+                <timestamp>timestamp</timestamp>
+                <version>[ignore]</version>
+                <logger>logger</logger>
+                <thread>[ignore]</thread>
+                <levelValue>[ignore]</levelValue>
+            </fieldNames>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
